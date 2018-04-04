@@ -31,35 +31,6 @@ const loadABI = function(abiFilePath) {
 }
 
 
-/*
-// Casper - Precompiled Real Version
-const casper = new web3.eth.Contract('./contracts/contract/casper/compiled/simple_casper.abi', '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe', {
-  from: accounts[0], 
-  gasPrice: '20000000000' // 20 gwei
-});
-
-const casper = myContract.deploy({
-  data: './contracts/contract/casper/compiled/simple_casper.bin',
-  arguments: [123, 'My String']
-})
-.send({
-  from: '0x1234567890123456789012345678901234567891',
-  gas: 1500000,
-  gasPrice: '30000000000000'
-}, function(error, transactionHash){ ... })
-.on('error', function(error){ ... })
-.on('transactionHash', function(transactionHash){ ... })
-.on('receipt', function(receipt){
- console.log(receipt.contractAddress) // contains the new contract address
-})
-.on('confirmation', function(confirmationNumber, receipt){ ... })
-.then(function(newContractInstance){
-  console.log(newContractInstance.options.address) // instance with the new contract address
-});
-*/
-
-
-
 module.exports = async (deployer, network) => {
     // Set our web3 1.0 provider
     let $web3;
