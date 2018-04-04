@@ -6,6 +6,7 @@
 */
 
 const Web3 = require('web3');
+const FS = require('fs');
 
 // Importing babel to be able to use ES6 imports
 require("babel-register")({
@@ -22,6 +23,7 @@ require("babel-polyfill");
 
 module.exports = {
   web3: Web3,
+  fs: FS,
   networks: {
     development: {
       host: 'localhost',
