@@ -15,9 +15,9 @@ module.exports.init = function (ownerAddress, sigHashAddress, purityAddress, min
             // _purity_checker - The purity checker contract, checks the sig of the validator
             purityAddress,
             // _base_interest_factor - Base interest factor
-            0.04,
+            0.01,
             // _base_penalty_factor - Base penalty factor
-            0.02,
+            0.0001,
             // _min_deposit_size - Minimum deposit size in wei
             minDepositSize
         ];

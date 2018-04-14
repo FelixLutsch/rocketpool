@@ -105,7 +105,7 @@ module.exports = async (deployer, network) => {
                                         // Casper settings 
                                         { arguments: casperInit.init(accounts[0], sigHashContract._address, purityCheckerContract._address, web3.toWei('5', 'ether')),
                                           data: config.fs.readFileSync('./contracts/contract/casper/compiled/simple_casper.bin')
-                                        }).send({from: accounts[0], gas: 2000000, gasPrice: '20000000000'}, function(error, transactionHash){ 
+                                        }).send({from: accounts[0], gas: 5000000, gasPrice: '20000000000'}, function(error, transactionHash){ 
                                         }).then(async (casperContract) => {
                                         // Update the storage with the new addresses
                                         return rocketStorage.deployed().then(async rocketStorageInstance => {
