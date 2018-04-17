@@ -1,7 +1,10 @@
 // Config
 const config = require('../truffle.js');
 
-// Contacts
+// Artifactor 
+//const artifactor = new config.artifactor('./contracts/contract/casper/compiled');
+
+// Contracts
 const rocketStorage = artifacts.require('./RocketStorage.sol');
 const rocketRole = artifacts.require('./RocketRole.sol');
 const rocketPool = artifacts.require('./RocketPool.sol');
@@ -18,6 +21,7 @@ const rocketUpgrade = artifacts.require('./RocketUpgrade.sol');
 const rocketUtils = artifacts.require('./RocketUtils.sol');
 const rocketPoolTokenDummy = artifacts.require('./contract/DummyRocketPoolToken.sol');
 const dummyCasper = artifacts.require('./contract/casper/DummyCasper.sol');
+
 
 // Accounts
 const accounts = web3.eth.accounts;
@@ -37,6 +41,63 @@ module.exports = async (deployer, network) => {
     if ( network == 'development' || network == 'dev' ) {
       $web3 = new config.web3('http://localhost:8545');
     }  
+    /*
+    // Our current provider
+    const provider = 'http://localhost:8545';
+    // Get the network ID
+    const networkId = await $web3.eth.net.getId();
+    // Dev network settings
+    if ( network == 'development' || network == 'dev' ) {    
+      // Set our web3 1.0 provider
+      const $web3 = new config.web3(provider);
+      // Create artifacts for precompiled contracts
+      /*
+      var purityChecker = config.contract({
+        abi: loadABI('./contracts/contract/casper/compiled/purity_checker.abi'),
+        bytecode: config.fs.readFileSync('./contracts/contract/casper/compiled/purity_checker.bin'),
+        network_id: networkId
+      })
+      console.log(web3.currentProvider);
+      // Set provider
+      purityChecker.setProvider(web3.currentProvider);
+
+      // Deploy rocketStorage first - has to be done in this order so that the following contracts already know the storage address
+      return deployer.deploy(purityChecker).then(() => {
+        console.log('DEPLOYED');
+      });
+
+
+      // Purity checker
+      /*
+      var contractData = {
+        contract_name: "PurityChecker", 
+        abi: loadABI('./contracts/contract/casper/compiled/purity_checker.abi'),
+        unlinked_binary: config.fs.readFileSync('./contracts/contract/casper/compiled/purity_checker.bin'),                        
+      };
+      await artifactor.save(contractData).then(function(result) {
+        console.log('\x1b[33m%s\x1b[0m', 'Precompiled Contract Artifacts Created - Purity Checker');
+      });
+      // Sighasher
+      var contractData = {
+        contract_name: "SigHasher", 
+        abi: loadABI('./contracts/contract/casper/compiled/sighash.abi'),
+        unlinked_binary: config.fs.readFileSync('./contracts/contract/casper/compiled/sighash.bin'),                        
+      };
+      await artifactor.save(contractData).then(function(result) {
+        console.log('\x1b[33m%s\x1b[0m', 'Precompiled Contract Artifacts Created - Signature Hasher');
+      });
+      // Casper
+      var contractData = {
+        contract_name: "Casper", 
+        abi: loadABI('./contracts/contract/casper/compiled/simple_casper.abi'),
+        unlinked_binary: config.fs.readFileSync('./contracts/contract/casper/compiled/simple_casper.bin'),                        
+      };
+      await artifactor.save(contractData).then(function(result) {
+        console.log('\x1b[33m%s\x1b[0m', 'Precompiled Contract Artifacts Created - Casper');
+      });*/
+
+
+    //}  
     // Deploy rocketStorage first - has to be done in this order so that the following contracts already know the storage address
     return deployer.deploy(rocketStorage).then(() => {
       // Deploy casper dummy contract
@@ -99,7 +160,6 @@ module.exports = async (deployer, network) => {
                                           from: accounts[0], 
                                           gasPrice: '20000000000' // 20 gwei
                                       });
-                                      console.log(casperInit.init(accounts[0], sigHashContract._address, purityCheckerContract._address, web3.toWei('5', 'ether')));
                                       // Deploy Casper
                                       return casper.deploy(
                                         // Casper settings 
@@ -330,7 +390,7 @@ module.exports = async (deployer, network) => {
                                             sigHashContract._address
                                           );
                                           await rocketStorageInstance.setAddress(
-                                            config.web3.utils.soliditySha3('contract.name', 'signatureHasher'),
+                                            config.web3.utils.soliditySha3('contract.name', 'sigHasher'),
                                             sigHashContract._address
                                           );
                                           // Log it

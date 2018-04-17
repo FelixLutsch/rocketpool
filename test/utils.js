@@ -1,3 +1,8 @@
+import { RocketStorage } from './artifacts';
+
+// The newer version of Web3. Waiting for them to upgrade truffles web3.
+const $web3 = require('web3');
+const FS = require('fs');
 
 // Print pretty test title
 export function printTitle(user, desc) {
@@ -14,6 +19,18 @@ export async function assertThrows(promise, err) {
     }
 }
 
+// Get the ABI file - used for precompiled contracts
+export function getABI (abiFilePath) {
+    return JSON.parse(FS.readFileSync(abiFilePath));
+}
+
+// Get the address of a registered RP contract
+export async function getContractAddressFromStorage (contractName) {
+    // Contract dependencies
+    let rocketStorage = await RocketStorage.deployed()
+    return await rocketStorage.getAddress(soliditySha3('contract.name', contractName), {gas: 250000});
+}
+
 // Print the event to console
 export function printEvent (type, result, colour) {
   console.log('\n');
@@ -26,8 +43,7 @@ export function printEvent (type, result, colour) {
   console.log('\n');
 };
 
-// The newer version of Web3 is used for hashing, the old one that comes with truffle does it incorrectly. Waiting for them to upgrade truffles web3.
-const web3New = require('web3');
+//  New web3 is used for hashing, the old one that comes with truffle does it incorrectly.
 export function soliditySha3() {
-    return web3New.utils.soliditySha3.apply(web3New, Array.prototype.slice.call(arguments));
+    return $web3.utils.soliditySha3.apply($web3, Array.prototype.slice.call(arguments));
 }

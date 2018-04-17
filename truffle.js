@@ -1,12 +1,15 @@
 /**
   Rocket Pool
   @author David Rugendyke
-  @email david@mail.rocketpool.net
+  @email david@rocketpool.net
   @version 0.1 
 */
 
 const Web3 = require('web3');
 const FS = require('fs');
+const Contract = require('truffle-contract');
+
+
 
 // Importing babel to be able to use ES6 imports
 require("babel-register")({
@@ -23,7 +26,8 @@ require("babel-polyfill");
 
 module.exports = {
   web3: Web3,
-  fs: FS,
+    fs: FS,
+contract: Contract,
   networks: {
     development: {
       host: 'localhost',

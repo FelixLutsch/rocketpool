@@ -1,5 +1,15 @@
-import { Casper, CasperValidation } from '../artifacts';
+import { Casper, CasperValidation, PurityChecker, SigHasher, CasperReal } from '../artifacts';
 
+
+// Retrieve base_penalty_factor which is a DECIMAL10 attribute
+export async function scenarioVerifyDecimal10(fromAddress) {
+    let casperReal = await CasperReal();
+    console.log(casperReal);
+    let result = await casperReal.methods.base_penalty_factor().call({from: fromAddress});
+    console.log(result);
+
+    //assert.isTrue(isFloat(casperBasePenaltyFactor), 'Verified Casper DECIMAL10 is a float');
+}
 
 // Increments Casper epoch and asserts current epoch is set correctly
 export async function scenarioIncrementEpoch(fromAddress) {
