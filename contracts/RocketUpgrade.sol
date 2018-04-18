@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.21;
 
 
 import "./RocketBase.sol";
@@ -68,6 +68,6 @@ contract RocketUpgrade is RocketBase {
         // Remove the old contract address verification
         rocketStorage.deleteAddress(keccak256("contract.address", oldContractAddress));
         // Log it
-        ContractUpgraded(oldContractAddress, _upgradedContractAddress, now);
+        emit ContractUpgraded(oldContractAddress, _upgradedContractAddress, now);
     }
 }

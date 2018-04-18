@@ -6,9 +6,7 @@ export async function scenarioVerifyDecimal10(fromAddress) {
     let casperReal = await CasperReal();
     console.log(casperReal);
     let result = await casperReal.methods.base_penalty_factor().call({from: fromAddress});
-    console.log(result);
-
-    //assert.isTrue(isFloat(casperBasePenaltyFactor), 'Verified Casper DECIMAL10 is a float');
+    assert.isTrue(isFloat(casperBasePenaltyFactor), 'Verified Casper DECIMAL10 is a float');
 }
 
 // Increments Casper epoch and asserts current epoch is set correctly

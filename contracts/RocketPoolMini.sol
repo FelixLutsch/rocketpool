@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.21;
 
 
 import "./RocketBase.sol";
@@ -133,7 +133,7 @@ contract RocketPoolMini is RocketBase {
     /// @dev Fallback function where our deposit + rewards will be received after requesting withdrawal from Casper
     function() public payable { 
         // Log the deposit received
-        DepositReceived(msg.sender, msg.value, now);       
+        emit DepositReceived(msg.sender, msg.value, now);       
     }
 
     /// @dev Use inline assembly to read the boolean value back from a delegatecall method in the minipooldelegate contract

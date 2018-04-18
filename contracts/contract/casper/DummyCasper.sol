@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.21;
 
 
 import "../Ownable.sol";
@@ -155,7 +155,7 @@ contract DummyCasper is Ownable {
         next_validator_index += 1;
         second_next_dynasty_wei_delta += msg.value;
         // All good? Fire the event for the new deposit
-        Transfered(msg.sender, this, keccak256("deposit"), msg.value, now); 
+        emit Transfered(msg.sender, this, keccak256("deposit"), msg.value, now); 
             
     }
 
@@ -172,7 +172,7 @@ contract DummyCasper is Ownable {
         validators[validator_index].end_dynasty = dynasty + 2;
         second_next_dynasty_wei_delta -= validators[validator_index].deposit;
         // Fire the event
-        Logout(msg.sender, now);
+        emit Logout(msg.sender, now);
     }
 
     /// @dev Allow a validator to withdraw their deposit +interest/-penalties
@@ -205,7 +205,7 @@ contract DummyCasper is Ownable {
         // Remove the validator now
         delete_validator(validator_index);
         // Log it
-        Withdrawal(validators[validator_index].withdrawal_addr, withdrawal_amount_processed, now);
+        emit Withdrawal(validators[validator_index].withdrawal_addr, withdrawal_amount_processed, now);
     }
 
     /// @dev Delete the validator

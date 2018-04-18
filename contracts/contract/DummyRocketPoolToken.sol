@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.21;
 
 
 import "./Ownable.sol";
@@ -53,7 +53,7 @@ contract DummyRocketPoolToken is StandardToken, Ownable {
         // Increase the current total supply
         totalSupply = totalSupply.add(_amount);
         // Fire mint token event
-        MintToken(msg.sender, _to, _amount);
+        emit MintToken(msg.sender, _to, _amount);
         // Return success flag
         return true;
     }

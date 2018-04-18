@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.21;
 
 
 import "./RocketBase.sol";
@@ -200,7 +200,7 @@ contract RocketNode is RocketBase {
         // We also index all our nodes so we can do a reverse lookup based on its array index
         rocketStorage.setAddress(keccak256("nodes.index.reverse", nodeCountTotal), _newNodeAddress);
         // Fire the event
-        NodeRegistered(_newNodeAddress, now);       
+        emit NodeRegistered(_newNodeAddress, now);       
         // All good
         return true;
     } 
@@ -240,7 +240,7 @@ contract RocketNode is RocketBase {
             rocketStorage.deleteAddress(keccak256("nodes.index.reverse", removedNodeIndex));
         }
         // Fire the event
-        NodeRemoved(_nodeAddress, now);
+        emit NodeRemoved(_nodeAddress, now);
     } 
  
 
@@ -252,7 +252,7 @@ contract RocketNode is RocketBase {
         // Get our settings
         rocketSettings = RocketSettingsInterface(rocketStorage.getAddress(keccak256("contract.name", "rocketSettings")));
         // Fire the event
-        NodeCheckin(msg.sender, _currentLoadAverage, now);
+        emit NodeCheckin(msg.sender, _currentLoadAverage, now);
         // Updates the current 15 min load average on the node, last checkin time etc
         // Get the last checkin and only update if its changed to save on gas
         if (rocketStorage.getUint(keccak256("node.averageLoad", msg.sender)) != _currentLoadAverage) {
@@ -281,7 +281,7 @@ contract RocketNode is RocketBase {
                         // Disable the node - must be manually reactivated by the function above when its back online/running well
                         rocketStorage.setBool(keccak256("node.active", currentNodeAddress), false);
                         // Fire the event
-                        NodeActiveStatus(currentNodeAddress, false, now);
+                        emit NodeActiveStatus(currentNodeAddress, false, now);
                     }
                 }
             }

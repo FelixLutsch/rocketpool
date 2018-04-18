@@ -1,4 +1,4 @@
-pragma solidity 0.4.19;
+pragma solidity 0.4.21;
 
 import "./RocketBase.sol";
 import "./RocketPoolMini.sol"; 
@@ -149,7 +149,7 @@ contract RocketPool is RocketBase {
             // User is added if they don't exist in it already
             if (poolAddUserTo.addUser(_newUserAddress, _partnerAddress)) {
                 // Fire the event
-                PoolAssignedUser(_newUserAddress, _partnerAddress, poolAssignToAddress, now);
+                emit PoolAssignedUser(_newUserAddress, _partnerAddress, poolAssignToAddress, now);
             } 
             // Return the pool address that the user belongs to
             return poolAssignToAddress;
@@ -184,7 +184,7 @@ contract RocketPool is RocketBase {
                     // Set this nodes validation code for the minipool to use
                     pool.setNodeValCodeAddress(rocketNode.getNodeValCodeAddress(nodeAddress)); 
                     // Fire the event
-                    PoolAssignedToNode(nodeAddress, poolsFound[i], now);
+                    emit PoolAssignedToNode(nodeAddress, poolsFound[i], now);
                     // Now set the pool to begin staking with casper by updating its status with the newly assigned node
                     pool.updateStatus();
                     // Exit the loop
@@ -367,7 +367,7 @@ contract RocketPool is RocketBase {
         // We also index all our data so we can do a reverse lookup based on its array index
         rocketStorage.setAddress(keccak256("minipools.index.reverse", minipoolCountTotal), newPoolAddress);
         // Fire the event
-        PoolCreated(newPoolAddress, _poolStakingDuration, now);
+        emit PoolCreated(newPoolAddress, _poolStakingDuration, now);
         // Return the new pool address
         return newPoolAddress; 
     } 
@@ -399,7 +399,7 @@ contract RocketPool is RocketBase {
                 rocketStorage.deleteAddress(keccak256("minipools.index.reverse", removedMinipoolIndex));
             }
             // Fire the event
-            PoolRemoved(msg.sender, now);
+            emit PoolRemoved(msg.sender, now);
             // Success
             return true;   
         }
