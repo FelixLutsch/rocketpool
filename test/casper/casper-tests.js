@@ -1,15 +1,16 @@
 import { printTitle, getContractAddressFromStorage, mineBlockAmount } from '../utils';
 import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10 } from './casper-scenarios';
+import { casperEpochInitialise } from '../casper';
 
 
 export default function({owner}) {
 
-    // Reinitialise a clean Casper with correct epoch
-    before(async () => {
-        
-    });
+    contract.only('Casper', async (accounts) => {
 
-    contract('Casper', async (accounts) => {
+        // Since new blocks occur for each transaction, make sure to inialise any new epochs automatically between tests
+        beforeEach(async () => {
+            await casperEpochInitialise(owner);
+        });
 
         // With the newly deployed Casper contract, check the epoch is current
         it(printTitle('casper', 'epoch is current and correct'), async () => {
