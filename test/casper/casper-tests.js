@@ -1,5 +1,5 @@
 import { printTitle, getContractAddressFromStorage, mineBlockAmount } from '../utils';
-import { scenarioEpochIsCurrent, scenarioIncrementDynasty, scenarioVerifyDecimal10 } from './casper-scenarios';
+import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10 } from './casper-scenarios';
 
 
 export default function({owner}) {
@@ -14,7 +14,11 @@ export default function({owner}) {
         // With the newly deployed Casper contract, check the epoch is current
         it(printTitle('casper', 'epoch is current and correct'), async () => {
             await scenarioEpochIsCurrent(owner);
-            await mineBlockAmount(20);
+        });
+
+        // Incrememnt the current Casper epoch and initalise it
+        it(printTitle('casper', 'epoch increment by 2 and initialise the new epoch'), async () => {
+            await scenarioIncrementEpochAndInitialise(owner, 2);
         });
 
         // Simulate Caspers epoch and dynasty changing

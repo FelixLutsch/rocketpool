@@ -1,18 +1,20 @@
 import { mineBlockAmount } from '../utils';
-import { Casper, CasperValidation, PurityChecker, SigHasher } from '../artifacts';
+import { CasperValidation } from '../artifacts';
+import { CasperInstance, casperEpochIncrementAmount } from '../casper';
 
 
 // Retrieve base_penalty_factor which is a DECIMAL10 attribute and should be greater than 0 but less than 1
 export async function scenarioVerifyDecimal10(fromAddress) {
-    let casper = await Casper();
+    let casper = await CasperInstance();
     let result = await casper.methods.base_penalty_factor().call({from: fromAddress});
     assert.isTrue(result > 0 && result < 1, 'Verified Casper DECIMAL10 is a float');
 }
 
 // The current Epoch is the expected epoch
 export async function scenarioEpochIsCurrent(fromAddress) {
+    // Casper
+    const casper = await CasperInstance();
     // Get the current epoch
-    const casper = await Casper();
     let epochCurrent = await casper.methods.current_epoch().call({from: fromAddress});
     // Get the current epoch length
     let epochBlockLength = await casper.methods.epoch_length().call({from: fromAddress});
@@ -25,12 +27,16 @@ export async function scenarioEpochIsCurrent(fromAddress) {
 }
 
 // Increments Casper epoch and asserts current epoch is set correctly
-export async function scenarioIncrementEpochOld(fromAddress) {
-    const casper = await Casper.deployed();
-    let casperEpochOld = await casper.get_current_epoch.call();
-    await casper.set_increment_epoch({from: fromAddress});
-    let casperEpochNew = await casper.get_current_epoch.call();
-    assert.equal(casperEpochNew.valueOf(), parseInt(casperEpochOld.valueOf()) + 1, 'Updated Casper epoch does not match');
+export async function scenarioIncrementEpochAndInitialise(fromAddress, amount) {
+    // Casper
+    const casper = await CasperInstance();
+    // Get the current epoch
+    let epochCurrent = await casper.methods.current_epoch().call({from: fromAddress});
+    await casperEpochIncrementAmount(fromAddress, amount);
+    // Get the current epoch after
+    let epochCurrentAfter = await casper.methods.current_epoch().call({from: fromAddress});
+    //console.log(epochCurrent, epochCurrentAfter, parseInt(epochCurrent) + parseInt(amount));
+    assert.equal(parseInt(epochCurrentAfter), parseInt(epochCurrent) + parseInt(amount), 'Updated Casper epoch does not match');
 }
 
 

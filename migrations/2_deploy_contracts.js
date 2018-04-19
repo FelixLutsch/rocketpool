@@ -307,7 +307,8 @@ module.exports = async (deployer, network) => {
                                               });
                                               // Deploy Purity Checker
                                               const purityCheckerContract = await purityChecker.deploy({data: config.fs.readFileSync('./contracts/contract/casper/compiled/purity_checker.bin')}).send({
-                                                      from: accounts[0], gas: 1500000, 
+                                                      from: accounts[0], 
+                                                      gas: 1500000, 
                                                       gasPrice: '20000000000'
                                               });
 

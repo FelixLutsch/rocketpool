@@ -18,7 +18,3 @@ export const RocketUpgrade = artifacts.require('./contract/RocketUpgrade');
 export const CasperDummy = artifacts.require('./contract/Casper/DummyCasper');
 export const CasperValidation = artifacts.require('./contract/Casper/Validation');
 
-// Load our precompiled contracts now as web3.eth.contract instances
-export async function Casper () {
-    return new $web3.eth.Contract(getABI('./contracts/contract/casper/compiled/simple_casper.abi'), await getContractAddressFromStorage('casper'));
-}
