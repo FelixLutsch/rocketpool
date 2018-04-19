@@ -1,16 +1,31 @@
-import { Casper, CasperValidation, PurityChecker, SigHasher, CasperReal } from '../artifacts';
+import { mineBlockAmount } from '../utils';
+import { Casper, CasperValidation, PurityChecker, SigHasher } from '../artifacts';
 
 
-// Retrieve base_penalty_factor which is a DECIMAL10 attribute
+// Retrieve base_penalty_factor which is a DECIMAL10 attribute and should be greater than 0 but less than 1
 export async function scenarioVerifyDecimal10(fromAddress) {
-    let casperReal = await CasperReal();
-    console.log(casperReal);
-    let result = await casperReal.methods.base_penalty_factor().call({from: fromAddress});
-    assert.isTrue(isFloat(casperBasePenaltyFactor), 'Verified Casper DECIMAL10 is a float');
+    let casper = await Casper();
+    let result = await casper.methods.base_penalty_factor().call({from: fromAddress});
+    assert.isTrue(result > 0 && result < 1, 'Verified Casper DECIMAL10 is a float');
+}
+
+// The current Epoch is the expected epoch
+export async function scenarioEpochIsCurrent(fromAddress) {
+    // Get the current epoch
+    const casper = await Casper();
+    let epochCurrent = await casper.methods.current_epoch().call({from: fromAddress});
+    // Get the current epoch length
+    let epochBlockLength = await casper.methods.epoch_length().call({from: fromAddress});
+    // Get the current block number
+    let blockCurrent = web3.eth.blockNumber;
+    // This would be the current epoch we expect
+    let epochExpected = Math.floor(blockCurrent/epochBlockLength);
+    //console.log(blockCurrent, epochBlockLength, epochCurrent, epochExpected);
+    assert.equal(epochExpected, epochCurrent, 'Casper epoch is not current');
 }
 
 // Increments Casper epoch and asserts current epoch is set correctly
-export async function scenarioIncrementEpoch(fromAddress) {
+export async function scenarioIncrementEpochOld(fromAddress) {
     const casper = await Casper.deployed();
     let casperEpochOld = await casper.get_current_epoch.call();
     await casper.set_increment_epoch({from: fromAddress});

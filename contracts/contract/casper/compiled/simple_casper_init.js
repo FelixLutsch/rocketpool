@@ -3,7 +3,7 @@ module.exports.init = function (ownerAddress, sigHashAddress, purityAddress, min
 
         return [
             // _epoch_length - The length of an epoch in blocks - Live Casper is 50
-            5,
+            25,
             // _withdrawal_delay - The required withdrawal delay in epochs
             2,
             // _dynasty_logout_delay - The required logout delay in dynasties (at least 2 epochs)

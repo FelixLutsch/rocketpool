@@ -13,49 +13,6 @@ import rocketVaultAccountTests from './rocket-vault/rocket-vault-account-tests';
 import rocketUpgradeTests from './rocket-upgrade/rocket-upgrade-tests';
 
 
-/**
- * Event logging
- */
-
-
-// Toggle display of events
-const displayEvents = false;
-
-// Display events triggered during the tests
-if (displayEvents) {
-  RocketPool.deployed().then(rocketPool => {
-    const eventWatch = rocketPool
-      .allEvents({
-        fromBlock: 0,
-        toBlock: 'latest',
-      })
-      .watch((error, result) => {
-        // This will catch all events, regardless of how they originated.
-        if (error == null) {
-          // Print the event
-          printEvent('rocket', result, '\x1b[33m%s\x1b[0m:');
-          // Listen for new pool events too
-          if (result.event == 'PoolCreated') {
-            // Get an instance of that pool
-            const miniPool = RocketPoolMini.at(result.args._address);
-            // Watch for events in minipools also as with the main contract
-            const poolEventWatch = miniPool
-              .allEvents({
-                fromBlock: 0,
-                toBlock: 'latest',
-              })
-              .watch((error, result) => {
-                // This will catch all pool events, regardless of how they originated.
-                if (error == null) {
-                  printEvent('minipool', result, '\x1b[32m%s\x1b[0m');
-                }
-              });
-          }
-        }
-      });
-  });
-}
-
 
 /**
  * Header
@@ -76,13 +33,16 @@ console.log('\\_| \\_\\___/ \\___|_|\\_\\___|\\__| \\_|  \\___/ \\___/|_|');
  * Tests
  */
 
+// Since the migrations have occured, Casper needs to be updated to the most current epoch/dynasty based on the blocks that have passed
 
 // The owner
 const owner = web3.eth.coinbase;
 
 // Run tests
-rocketStorageTests({owner});
 casperTests({owner});
+rocketStorageTests({owner});
+
+/*
 rocketNodeTests({owner});
 rocketPartnerAPITests({owner});
 rocketUserTests({owner});
@@ -90,4 +50,6 @@ rocketDepositTests({owner});
 rocketVaultAdminTests({owner});
 rocketVaultAccountTests({owner});
 rocketUpgradeTests({owner});
+*/
+
 

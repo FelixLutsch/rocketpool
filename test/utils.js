@@ -47,3 +47,18 @@ export function printEvent (type, result, colour) {
 export function soliditySha3() {
     return $web3.utils.soliditySha3.apply($web3, Array.prototype.slice.call(arguments));
 }
+
+// Mine multiple blocks - used primarily for advancing Casper epochs
+export async function mineBlockAmount(blockAmount) {
+    const mineOneBlock = async () => {
+        await web3.currentProvider.send({
+          jsonrpc: '2.0',
+          method: 'evm_mine',
+          params: [],
+          id: 0,
+        })
+      }
+    for (let i = 0; i < blockAmount; i++) {
+        await mineOneBlock();
+    }
+}

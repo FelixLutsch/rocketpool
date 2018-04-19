@@ -5,7 +5,6 @@ export default function({owner}) {
 
     contract('RocketStorage', async (accounts) => {
 
-
         // Owners direct access to storage is removed after initialisation when deployed
         it(printTitle('owner', 'fail to access storage directly after deployment'), async () => {
             await assertThrows(scenarioWriteBool({
