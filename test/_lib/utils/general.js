@@ -1,4 +1,4 @@
-import { RocketStorage } from './artifacts';
+import { RocketStorage } from '../artifacts';
 
 // The newer version of Web3. Waiting for them to upgrade truffles web3.
 const $web3 = require('web3');

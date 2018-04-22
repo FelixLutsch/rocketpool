@@ -1,4 +1,4 @@
-import { RocketSettings, RocketPool } from '../artifacts';
+import { RocketSettings, RocketPool } from '../_lib/artifacts';
 import { scenarioIncrementEpoch, scenarioIncrementDynasty, scenarioCreateValidationContract } from '../casper/casper-scenarios';
 import { scenarioRegisterNode, scenarioNodeCheckin } from './rocket-node-scenarios';
 

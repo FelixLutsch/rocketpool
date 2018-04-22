@@ -1,5 +1,5 @@
-import { printEvent } from './utils';
-import { RocketPool, RocketPoolMini} from './artifacts';
+import { printEvent } from './_lib/utils/general';
+import { RocketPool, RocketPoolMini} from './_lib/artifacts';
 
 // Import tests
 import rocketStorageTests from './rocket-storage/rocket-storage-tests';
@@ -19,7 +19,7 @@ import rocketUpgradeTests from './rocket-upgrade/rocket-upgrade-tests';
  */
 
 
-// Excessive? Yeah probably :)
+// Excessive? Yeah probably :D
 console.log('\n');
 console.log('______           _        _    ______           _ ');
 console.log('| ___ \\         | |      | |   | ___ \\         | |');
@@ -32,8 +32,6 @@ console.log('\\_| \\_\\___/ \\___|_|\\_\\___|\\__| \\_|  \\___/ \\___/|_|');
 /**
  * Tests
  */
-
-// Since the migrations have occured, Casper needs to be updated to the most current epoch/dynasty based on the blocks that have passed
 
 // The owner
 const owner = web3.eth.coinbase;

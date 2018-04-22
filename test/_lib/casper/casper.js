@@ -5,12 +5,12 @@ const $Web3 = require('web3');
 const $web3 = new $Web3('http://localhost:8545');
 const FS = require('fs');
 
-import { getABI, soliditySha3, mineBlockAmount, getContractAddressFromStorage } from './utils';
-import { RocketStorage, RocketUpgrade } from './artifacts';
+import { getABI, soliditySha3, mineBlockAmount, getContractAddressFromStorage } from '../utils/general';
+import { RocketStorage, RocketUpgrade } from '../artifacts';
 
 
 // Casper settings
-const casperInit = require('../contracts/contract/casper/compiled/simple_casper_init.js');
+const casperInit = require('../../../contracts/contract/casper/compiled/simple_casper_init.js');
 
 // Load our precompiled casper contract now as web3.eth.contract
 async function Casper() {
@@ -26,13 +26,16 @@ async function epochInitialise(fromAddress) {
     // Get the current block number
     let blockCurrent = web3.eth.blockNumber;
     // Get the current epoch length
-    let epochBlockLength = await casper.methods.epoch_length().call({from: fromAddress});
+    let epochBlockLength = await casper.methods.EPOCH_LENGTH().call({from: fromAddress});
     // This would be the current epoch we expect
     let epochExpected = Math.floor(blockCurrent/epochBlockLength);
     // Shall we?
     if(parseInt(epochCurrent) < parseInt(epochExpected)) {
         // Initialise the new epoch now
         await casper.methods.initialize_epoch(parseInt(epochCurrent) + 1).send({from: fromAddress, gas: 1750000, gasPrice: '20000000000'});
+        // Check to see the last finalised epoch
+        // let epochLastFinalised = await casper.methods.last_finalized_epoch().call({from: fromAddress});
+        // console.log(epochLastFinalised, epochExpected);
     }
 }
 
@@ -50,7 +53,7 @@ export async function casperEpochIncrementAmount(fromAddress, amount) {
         // Get the current epoch
         let epochCurrent = await casper.methods.current_epoch().call({from: fromAddress});
         // Get the current epoch length
-        let epochBlockLength = await casper.methods.epoch_length().call({from: fromAddress});
+        let epochBlockLength = await casper.methods.EPOCH_LENGTH().call({from: fromAddress});
         // Get the current block number
         let blockCurrent = web3.eth.blockNumber;
         // How many blocks are we passed the last epoch?

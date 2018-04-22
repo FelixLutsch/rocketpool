@@ -1,7 +1,7 @@
 const $Web3 = require('web3');
 const $web3 = new $Web3('http://localhost:8545');
 
-import { getABI, getContractAddressFromStorage } from './utils';
+import { getABI, getContractAddressFromStorage } from './utils/general';
 
 export const RocketUser = artifacts.require('./contract/RocketUser');
 export const RocketNode = artifacts.require('./contract/RocketNode');
