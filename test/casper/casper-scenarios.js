@@ -43,7 +43,7 @@ export async function scenarioIncrementEpochAndInitialise(fromAddress, amount) {
 export async function scenarioDeposit(fromAddress, amountInWei, validationAddr, withdrawalAddr) {
     // Casper
     const casper = await CasperInstance();
-    console.log(fromAddress, web3.fromWei(amountInWei, 'ether'), validationAddr, withdrawalAddr);
+    //console.log(fromAddress, web3.fromWei(amountInWei, 'ether'), validationAddr, withdrawalAddr);
     let tx = await casper.methods.deposit(validationAddr, withdrawalAddr).send({
         from: fromAddress, 
         gas: 3750000, 
