@@ -1,6 +1,6 @@
 import { sendDeployTransaction } from '../_lib/smart-node/validation-code-contract';
 import { printTitle, assertThrows, getContractAddressFromStorage, mineBlockAmount } from '../_lib/utils/general';
-import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10, scenarioDeposit } from './casper-scenarios';
+import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10, scenarioValidatorDeposit, scenarioValidatorDepositSize } from './casper-scenarios';
 import { CasperInstance, casperEpochInitialise } from '../_lib/casper/casper';
 
 
@@ -49,7 +49,7 @@ export default function({owner}) {
             // Deploy a validation contract for the user
             let validationTx = await sendDeployTransaction(validatorFirst, null);
             // Deposit with Casper
-            await assertThrows(scenarioDeposit(validatorFirst, minDepositInWei, validationTx.contractAddress, validatorFirst));
+            await assertThrows(scenarioValidatorDeposit(validatorFirst, minDepositInWei, validationTx.contractAddress, validatorFirst));
         });
 
   
@@ -65,7 +65,20 @@ export default function({owner}) {
             // Deploy a validation contract for the user
             let validationTx = await sendDeployTransaction(validatorFirst, null);
             // Deposit with Casper
-            await scenarioDeposit(validatorFirst, minDepositInWei, validationTx.contractAddress, validatorFirst);
+            await scenarioValidatorDeposit(validatorFirst, minDepositInWei, validationTx.contractAddress, validatorFirst);
+        });
+
+
+        // Verify deposit
+        it(printTitle('validatorFirst', 'verify deposit amount is correct'), async () => {
+            // Casper
+            const casper = await CasperInstance();
+            // Get the min deposit allowed
+            let minDepositInWei = await casper.methods.MIN_DEPOSIT_SIZE().call({from: validatorFirst});
+            // Get our deposit we just made
+            let depositSize = await scenarioValidatorDepositSize(validatorFirst, validatorFirst);
+            // Check that the deposit matches
+            assert.equal(Number(depositSize), Number(minDepositInWei), 'validatorFirst deposit size is incorrect');
         });
 
         

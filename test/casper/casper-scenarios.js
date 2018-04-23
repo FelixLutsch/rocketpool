@@ -40,7 +40,7 @@ export async function scenarioIncrementEpochAndInitialise(fromAddress, amount) {
 }
 
 // An address makes a deposit into Casper
-export async function scenarioDeposit(fromAddress, amountInWei, validationAddr, withdrawalAddr) {
+export async function scenarioValidatorDeposit(fromAddress, amountInWei, validationAddr, withdrawalAddr) {
     // Casper
     const casper = await CasperInstance();
     //console.log(fromAddress, web3.fromWei(amountInWei, 'ether'), validationAddr, withdrawalAddr);
@@ -50,7 +50,19 @@ export async function scenarioDeposit(fromAddress, amountInWei, validationAddr, 
         gasPrice: '20000000000',
         value: amountInWei
     });
-    console.log(tx);
+    assert.equal(tx.events.Deposit.returnValues._from.toLowerCase(), fromAddress.toLowerCase(), 'Casper deposit failed and has incorrect fromAddress');
+}
+
+// Get a validators deposit size
+export async function scenarioValidatorDepositSize(fromAddress, validatorWithdrawalAddress) {
+    // Casper
+    const casper = await CasperInstance();
+    // Get the current validator index
+    let validatorIndex = await casper.methods.validator_indexes(validatorWithdrawalAddress).call({from: fromAddress});
+    // Now get the deposit size
+    let validatorDepositSize = await casper.methods.deposit_size(validatorIndex).call({from: fromAddress});
+    assert.isTrue(parseInt(validatorDepositSize) >= 0, 'Casper validator deposit size is invalid');
+    return validatorDepositSize;
 }
 
 
