@@ -14,7 +14,9 @@ export default function({owner}) {
 
         // User/Validator addresses
         const validatorFirst = accounts[1];
+        let   validatorFirstValidationAddress = null;
         const validatorSecond = accounts[2];
+        let   validatorSecondValidationAddress = null;
         
         
         // Since new blocks occur for each transaction, make sure to inialise any new epochs automatically between tests
@@ -41,15 +43,14 @@ export default function({owner}) {
         it(printTitle('validatorFirst', 'fail to deposit less than the Casper minimum'), async () => {
             // Casper
             const casper = await CasperInstance();
-            // Get the current epoch
-            let epochCurrent = await casper.methods.current_epoch().call({from: validatorFirst});
-            let lastNonVoterRescale = await casper.methods.last_nonvoter_rescale().call({from: validatorFirst});
             // Get the min deposit allowed minus 1 ether
             let minDepositInWei = parseInt(await casper.methods.MIN_DEPOSIT_SIZE().call({from: validatorFirst})) - web3.toWei(1, 'ether');
             // Deploy a validation contract for the user
             let validationTx = await sendDeployTransaction(validatorFirst, null);
+            // Save the validation contract address
+            validatorFirstValidationAddress = validationTx.contractAddress;
             // Deposit with Casper
-            await assertThrows(scenarioValidatorDeposit(validatorFirst, minDepositInWei, validationTx.contractAddress, validatorFirst));
+            await assertThrows(scenarioValidatorDeposit(validatorFirst, minDepositInWei, validatorFirstValidationAddress, validatorFirst));
         });
 
   
@@ -57,15 +58,10 @@ export default function({owner}) {
         it(printTitle('validatorFirst', 'makes a successful minimum deposit into Casper'), async () => {
             // Casper
             const casper = await CasperInstance();
-            // Get the current epoch
-            let epochCurrent = await casper.methods.current_epoch().call({from: validatorFirst});
-            let lastNonVoterRescale = await casper.methods.last_nonvoter_rescale().call({from: validatorFirst});
             // Get the min deposit allowed
             let minDepositInWei = await casper.methods.MIN_DEPOSIT_SIZE().call({from: validatorFirst});
-            // Deploy a validation contract for the user
-            let validationTx = await sendDeployTransaction(validatorFirst, null);
             // Deposit with Casper
-            await scenarioValidatorDeposit(validatorFirst, minDepositInWei, validationTx.contractAddress, validatorFirst);
+            await scenarioValidatorDeposit(validatorFirst, minDepositInWei, validatorFirstValidationAddress, validatorFirst);
         });
 
 
@@ -81,7 +77,30 @@ export default function({owner}) {
             assert.equal(Number(depositSize), Number(minDepositInWei), 'validatorFirst deposit size is incorrect');
         });
 
-        
+
+        // Fail to deposit using incorrect validation contract
+        it(printTitle('validatorSecond', 'fail to deposit using incorrect validation contract'), async () => {
+            // Casper
+            const casper = await CasperInstance();
+            // Get the min deposit allowed minus 1 ether
+            let minDepositInWei = parseInt(await casper.methods.MIN_DEPOSIT_SIZE().call({from: validatorSecond})) - web3.toWei(1, 'ether');
+            // Deposit with Casper
+            await assertThrows(scenarioValidatorDeposit(validatorSecond, minDepositInWei, validatorFirstValidationAddress, validatorSecond));
+        });
+
+        // Deposit to Casper
+        it(printTitle('validatorSecond', 'makes a successful minimum deposit into Casper'), async () => {
+            // Casper
+            const casper = await CasperInstance();
+            // Get the min deposit allowed
+            let minDepositInWei = await casper.methods.MIN_DEPOSIT_SIZE().call({from: validatorSecond});
+            // Deploy a validation contract for the user
+            let validationTx = await sendDeployTransaction(validatorSecond, null);
+             // Save the validation contract address
+             validatorSecondValidationAddress = validationTx.contractAddress;
+            // Deposit with Casper
+            await scenarioValidatorDeposit(validatorSecond, minDepositInWei, validatorSecondValidationAddress, validatorSecond);
+        });
 
 
     });
