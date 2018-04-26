@@ -1,3 +1,5 @@
+const $web3 = require('web3');
+
 import { printEvent } from './_lib/utils/general';
 import { RocketPool, RocketPoolMini} from './_lib/artifacts';
 
@@ -11,7 +13,6 @@ import rocketDepositTests from './rocket-deposit/rocket-deposit-tests';
 import rocketVaultAdminTests from './rocket-vault/rocket-vault-admin-tests';
 import rocketVaultAccountTests from './rocket-vault/rocket-vault-account-tests';
 import rocketUpgradeTests from './rocket-upgrade/rocket-upgrade-tests';
-
 
 
 /**

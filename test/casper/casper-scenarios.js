@@ -1,4 +1,8 @@
-import { mineBlockAmount } from '../_lib/utils/general';
+const $Web3 = require('web3');
+const $web3 = new $Web3('http://localhost:8545');
+const RLP = require('rlp');
+
+import { mineBlockAmount, rlpEncode, getGanachePrivateKey } from '../_lib/utils/general';
 import { CasperValidation } from '../_lib/artifacts';
 import { CasperInstance, casperEpochIncrementAmount } from '../_lib/casper/casper';
 
@@ -64,6 +68,54 @@ export async function scenarioValidatorDepositSize(fromAddress, validatorWithdra
     assert.isTrue(parseInt(validatorDepositSize) >= 0, 'Casper validator deposit size is invalid');
     return validatorDepositSize;
 }
+
+
+// Vote for a validator
+export async function scenarioValidatorVote(fromAddress, validatorWithdrawalAddress) {
+    // Casper
+    const casper = await CasperInstance();
+    // Get the current validator index and vote
+    let validatorIndex = parseInt(await casper.methods.validator_indexes(validatorWithdrawalAddress).call({from: fromAddress}));
+    let casperCurrentEpoch = parseInt(await casper.methods.current_epoch().call({from: fromAddress}));
+    let targetHash = await casper.methods.recommended_target_hash().call({from: fromAddress});
+    let sourceEpoch = parseInt(await casper.methods.recommended_source_epoch().call({from: fromAddress}));
+    // Verify data ok
+    assert.isTrue(casperCurrentEpoch >= 0, 'Casper current epoch is invalid');
+    assert.isTrue(targetHash.length > 25, 'Casper target hash is invalid');
+    assert.isTrue(sourceEpoch >= 0 && sourceEpoch == (casperCurrentEpoch - 1), 'Casper source epoch is invalid');
+    //console.log(typeof targetHash);
+    //console.log(validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch);
+    // RLP encode the required vote message
+    let sigHash = $web3.utils.keccak256(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]));
+    //console.log(sigHash);
+    let signature = $web3.eth.accounts.sign(sigHash, getGanachePrivateKey());
+    let combinedSig = signature.v + signature.r +  signature.s;
+    let voteMessage = RLP.encode([validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig]);
+    //console.log(validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch);
+    //console.log(signature);
+    //console.log(voteMessage);
+    // console.log($web3.utils.bytesToHex(sigHash), $web3.utils.keccak256(sigHash), $web3.utils.sha3(sigHash));
+    // Estimate gas for vote transaction
+    //let voteGas = await casper.methods.vote('0x'+voteMessage.toString('hex')).estimateGas({ from: fromAddress });
+    //console.log(voteGas);  
+    //console.log('0x'+voteMessage.toString('hex'));
+
+    voteMessage = RLP.encode(['1']);
+
+    console.log([validatorIndex]);
+    console.log(voteMessage);
+    console.log($web3.utils.bytesToHex(voteMessage));
+    console.log($web3.utils.keccak256(voteMessage));
+
+    // Vote now
+    let tx = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).send({
+        from: fromAddress, 
+        gas: 5750000, 
+        gasPrice: '20000000000'
+    });
+    console.log(tx);
+}
+
 
 
 

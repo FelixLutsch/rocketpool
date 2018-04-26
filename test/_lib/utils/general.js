@@ -3,6 +3,8 @@ import { RocketStorage } from '../artifacts';
 // The newer version of Web3. Waiting for them to upgrade truffles web3.
 const $web3 = require('web3');
 const FS = require('fs');
+const ethUtils = require('ethereumjs-util');
+
 
 // Print pretty test title
 export function printTitle(user, desc) {
@@ -18,6 +20,18 @@ export async function assertThrows(promise, err) {
         assert.include(e.message, 'VM Exception');
     }
 }
+
+// RLP encode the given array argument
+export function rlpEncode (argArray) {
+    return ethUtils.rlphash(argArray);
+}
+
+// Get the gananche-cli private key
+export function getGanachePrivateKey () {
+    // Known private key because we start ganache with mnemonic "jungle neck govern chief unaware rubber frequent tissue service license alcohol velvet"
+    return 'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37';
+}
+
 
 // Get the ABI file - used for precompiled contracts
 export function getABI (abiFilePath) {

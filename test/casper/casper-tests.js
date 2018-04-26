@@ -1,6 +1,6 @@
 import { sendDeployTransaction } from '../_lib/smart-node/validation-code-contract';
 import { printTitle, assertThrows, getContractAddressFromStorage, mineBlockAmount } from '../_lib/utils/general';
-import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10, scenarioValidatorDeposit, scenarioValidatorDepositSize } from './casper-scenarios';
+import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10, scenarioValidatorDeposit, scenarioValidatorDepositSize, scenarioValidatorVote } from './casper-scenarios';
 import { CasperInstance, casperEpochInitialise } from '../_lib/casper/casper';
 
 
@@ -102,6 +102,12 @@ export default function({owner}) {
             await scenarioValidatorDeposit(validatorSecond, minDepositInWei, validatorSecondValidationAddress, validatorSecond);
         });
 
+
+        // Verify deposit
+        it(printTitle('validatorFirst', 'casts it vote for this epoch'), async () => {
+            // Deposit with Casper
+            await scenarioValidatorVote(validatorFirst, validatorFirst);
+        });
 
     });
 
