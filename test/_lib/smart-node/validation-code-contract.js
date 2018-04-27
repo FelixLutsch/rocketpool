@@ -2,23 +2,23 @@ let _ = require('underscore')._;
 let assemblyToEVM = require('../utils/assembly-to-evm');
 
 /**
- * sendDeployTransaction
+ * sendDeployValidationContract
  * 
  * Constructs and sends a transaction to deploy the Casper signature verification contract.
  * The contract is a pure function that uses the ecrecover precompiled contract for calculating the addressed used to sign a message.
  * The signer's address is baked into the contract at time of deployment.
  * The contract does not adhere to the ABI it is purely a function that is expecting parameters (hash, v, r, s)
- * The sendDeployTransaction expects the signer address to be unlocked. 
+ * The sendDeployValidationContract expects the signer address to be unlocked. 
 */
 
 const $Web3 = require('web3');
 const $web3 = new $Web3('http://localhost:8545');
 
 module.exports = {
-    sendDeployTransaction
+    sendDeployValidationContract
 }
 
-function sendDeployTransaction(signerAddress, password){
+function sendDeployValidationContract(signerAddress){
 
     return $web3.eth.sendTransaction({
         from: signerAddress,

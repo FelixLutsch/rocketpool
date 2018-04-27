@@ -339,7 +339,7 @@ module.exports = async (deployer, network) => {
 
                                               // Note Casper is deployed as late as possible to make sure its initial current_epoch correctly (if many transactions occur after its deployment, block number will be too far for the correct epoch to be used)
                                               // Precompiled - Casper
-                                              const casper = new $web3.eth.Contract(loadABI('./contracts/contract/casper/compiled/simple_casper.abi'), null, {
+                                              const casper = new $web3.eth.Contract(loadABI('./contracts/contract/casper/compiled/simple_casper_test.abi'), null, {
                                                   from: accounts[0], 
                                                   gasPrice: '20000000000' // 20 gwei
                                               });
@@ -347,7 +347,7 @@ module.exports = async (deployer, network) => {
                                               let casperBytecode = config.fs.readFileSync('./contracts/contract/casper/compiled/simple_casper_test.bin');
                                               // Update the casper bytecode to not use the rlp_decoder address specified here https://github.com/ethereum/vyper/blob/170229494a582735dc2973eb2b6f4ef6f493f67c/vyper/utils.py#L106
                                               // We need it to use the one we deployed, otherwise we'd need to recompile Vyper to use this one, so do a find and replace in the bytecode
-                                              casperBytecode = casperBytecode.toString().replace(/5185D17c44699cecC3133114F8df70753b856709/gi, 'Cb969cAAad21A78a24083164ffa81604317Ab603');
+                                              casperBytecode = casperBytecode.toString().replace(/5185D17c44699cecC3133114F8df70753b856709/gi, 'Cb969cAAad21A78a24083164ffa81604317Ab603').trim();
                                               // Create the contract now
                                               const casperContract = await casper.deploy(
                                                 // Casper settings 

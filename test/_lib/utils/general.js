@@ -29,7 +29,7 @@ export function rlpEncode (argArray) {
 // Get the gananche-cli private key
 export function getGanachePrivateKey () {
     // Known private key because we start ganache with mnemonic "jungle neck govern chief unaware rubber frequent tissue service license alcohol velvet"
-    return 'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37';
+    return Buffer.from('c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37', 'hex');
 }
 
 

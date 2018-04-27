@@ -1,4 +1,4 @@
-import { sendDeployTransaction } from '../_lib/smart-node/validation-code-contract';
+import { sendDeployValidationContract } from '../_lib/smart-node/validation-code-contract';
 import { printTitle, assertThrows, getContractAddressFromStorage, mineBlockAmount } from '../_lib/utils/general';
 import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10, scenarioValidatorDeposit, scenarioValidatorDepositSize, scenarioValidatorVote } from './casper-scenarios';
 import { CasperInstance, casperEpochInitialise } from '../_lib/casper/casper';
@@ -46,7 +46,7 @@ export default function({owner}) {
             // Get the min deposit allowed minus 1 ether
             let minDepositInWei = parseInt(await casper.methods.MIN_DEPOSIT_SIZE().call({from: validatorFirst})) - web3.toWei(1, 'ether');
             // Deploy a validation contract for the user
-            let validationTx = await sendDeployTransaction(validatorFirst, null);
+            let validationTx = await sendDeployValidationContract(validatorFirst);
             // Save the validation contract address
             validatorFirstValidationAddress = validationTx.contractAddress;
             // Deposit with Casper
@@ -95,7 +95,7 @@ export default function({owner}) {
             // Get the min deposit allowed
             let minDepositInWei = await casper.methods.MIN_DEPOSIT_SIZE().call({from: validatorSecond});
             // Deploy a validation contract for the user
-            let validationTx = await sendDeployTransaction(validatorSecond, null);
+            let validationTx = await sendDeployValidationContract(validatorSecond, null);
              // Save the validation contract address
              validatorSecondValidationAddress = validationTx.contractAddress;
             // Deposit with Casper

@@ -83,37 +83,26 @@ export async function scenarioValidatorVote(fromAddress, validatorWithdrawalAddr
     assert.isTrue(casperCurrentEpoch >= 0, 'Casper current epoch is invalid');
     assert.isTrue(targetHash.length > 25, 'Casper target hash is invalid');
     assert.isTrue(sourceEpoch >= 0 && sourceEpoch == (casperCurrentEpoch - 1), 'Casper source epoch is invalid');
-    //console.log(typeof targetHash);
-    //console.log(validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch);
     // RLP encode the required vote message
     let sigHash = $web3.utils.keccak256(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]));
     //console.log(sigHash);
     let signature = $web3.eth.accounts.sign(sigHash, getGanachePrivateKey());
     let combinedSig = signature.v + signature.r +  signature.s;
     let voteMessage = RLP.encode([validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig]);
-    //console.log(validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch);
-    //console.log(signature);
-    //console.log(voteMessage);
-    // console.log($web3.utils.bytesToHex(sigHash), $web3.utils.keccak256(sigHash), $web3.utils.sha3(sigHash));
     // Estimate gas for vote transaction
-    //let voteGas = await casper.methods.vote('0x'+voteMessage.toString('hex')).estimateGas({ from: fromAddress });
-    //console.log(voteGas);  
-    //console.log('0x'+voteMessage.toString('hex'));
-
-    voteMessage = RLP.encode(['1']);
-
-    console.log([validatorIndex]);
-    console.log(voteMessage);
-    console.log($web3.utils.bytesToHex(voteMessage));
-    console.log($web3.utils.keccak256(voteMessage));
-
+    let voteGas = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).estimateGas({ from: fromAddress });
+    console.log("\n");
+    console.log(validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig);
+    console.log(signature);
+    console.log(combinedSig);
+    console.log("\n");
     // Vote now
     let tx = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).send({
         from: fromAddress, 
-        gas: 5750000, 
+        gas: voteGas, 
         gasPrice: '20000000000'
     });
-    console.log(tx);
+    console.log(tx.events);
 }
 
 
