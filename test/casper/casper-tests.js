@@ -1,4 +1,4 @@
-import { sendDeployValidationContract } from '../_lib/smart-node/validation-code-contract';
+import { sendDeployValidationContract } from '../_lib/smart-node/validation-code-contract-compiled';
 import { printTitle, assertThrows, getContractAddressFromStorage, mineBlockAmount } from '../_lib/utils/general';
 import { scenarioEpochIsCurrent, scenarioIncrementEpochAndInitialise, scenarioVerifyDecimal10, scenarioValidatorDeposit, scenarioValidatorDepositSize, scenarioValidatorVote } from './casper-scenarios';
 import { CasperInstance, casperEpochInitialise } from '../_lib/casper/casper';
