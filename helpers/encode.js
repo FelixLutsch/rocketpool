@@ -7,7 +7,6 @@
 const $Web3 = require('web3');
 const $web3 = new $Web3('http://localhost:8545');
 const RLP = require('rlp');
-const convert = require('convert-string');
 const secp256k1 = require('secp256k1');
 
 // Sign
@@ -86,21 +85,5 @@ async function logs() {
     console.log(paddy(signatureOb.s, 64));
     console.log(paddy(signatureOb.v, 64) + paddy(signatureOb.r, 64) + paddy(signatureOb.s, 64));
     console.log("\n");
-    /*
-    //console.log(convert.stringToBytes(targetHash));
-    //console.log(targetHash); // CORRECT 
-    console.log(paddy((signature.v).toString(), 64));
-    console.log(paddy((signature.r).toString(), 64));
-    //console.log(paddy((signature.r).toString(), 64));
-    //console.log($web3.utils.padLeft(signature.r, 64));
-    console.log("\n");
-    console.log(sigHash);
-    console.log("\n");
-    console.log(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]).toString('hex'));
-    console.log("\n");
-    //console.log(signature.v);
-    //console.log(signature.r);
-    //console.log(signature.s);
-    */
 }
 logs();
