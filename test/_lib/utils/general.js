@@ -29,9 +29,8 @@ export function rlpEncode (argArray) {
 // Get the gananche-cli private key
 export function getGanachePrivateKey () {
     // Known private key because we start ganache with mnemonic "jungle neck govern chief unaware rubber frequent tissue service license alcohol velvet"
-    return Buffer.from('c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37', 'hex');
+    return 'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37';
 }
-
 
 // Get the ABI file - used for precompiled contracts
 export function getABI (abiFilePath) {
@@ -75,4 +74,25 @@ export async function mineBlockAmount(blockAmount) {
     for (let i = 0; i < blockAmount; i++) {
         await mineOneBlock();
     }
+}
+
+// Address formatting tools
+export function removeTrailing0x(str) {
+    if (str.startsWith('0x'))
+        return str.substring(2);
+    else return str;
+}
+
+export function addTrailing0x(str) {
+    if (!str.startsWith('0x'))
+        return '0x' + str;
+    else return str;
+}
+
+// Pads a string to a certain length
+export function paddy(string, padlen, padchar) {
+    string = string.substr(0, 2) == '0x' ? string.slice(2) : string;
+    var pad_char = typeof padchar !== 'undefined' ? padchar : '0';
+    var pad = new Array(1 + padlen).join(pad_char);
+    return (pad + string).slice(-pad.length);
 }

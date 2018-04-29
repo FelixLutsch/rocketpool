@@ -2,7 +2,8 @@ const $Web3 = require('web3');
 const $web3 = new $Web3('http://localhost:8545');
 const RLP = require('rlp');
 
-import { mineBlockAmount, rlpEncode, getGanachePrivateKey } from '../_lib/utils/general';
+import signRaw from '../_lib/utils/sign';
+import { mineBlockAmount, rlpEncode, getGanachePrivateKey, removeTrailing0x, paddy } from '../_lib/utils/general';
 import { CasperValidation } from '../_lib/artifacts';
 import { CasperInstance, casperEpochIncrementAmount } from '../_lib/casper/casper';
 
@@ -86,23 +87,26 @@ export async function scenarioValidatorVote(fromAddress, validatorWithdrawalAddr
     // RLP encode the required vote message
     let sigHash = $web3.utils.keccak256(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]));
     //console.log(sigHash);
-    let signature = $web3.eth.accounts.sign(sigHash, getGanachePrivateKey());
-    let combinedSig = signature.v + signature.r +  signature.s;
+    let signature = signRaw(sigHash, getGanachePrivateKey());
+    // Combine and pad too 32 int length (same as casper python code)
+    let combinedSig = paddy(signature.v, 64) + paddy(signature.r, 64) +  paddy(signature.s, 64);
     let voteMessage = RLP.encode([validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig]);
     // Estimate gas for vote transaction
-    let voteGas = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).estimateGas({ from: fromAddress });
+    //let voteGas = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).estimateGas({ from: fromAddress });
     console.log("\n");
     console.log(validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig);
     console.log(signature);
     console.log(combinedSig);
     console.log("\n");
     // Vote now
+
     let tx = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).send({
         from: fromAddress, 
-        gas: voteGas, 
+        gas: 4500000, 
         gasPrice: '20000000000'
     });
     console.log(tx.events);
+    
 }
 
 
