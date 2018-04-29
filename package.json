@@ -31,6 +31,7 @@
     "trailingComma": "es5"
   },
   "dependencies": {
+    "eth-crypto": "^1.1.0",
     "ethereumjs-util": "^5.1.5",
     "lerna": "^2.10.1",
     "rlp": "^2.0.0",

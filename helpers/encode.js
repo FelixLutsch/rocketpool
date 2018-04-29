@@ -8,6 +8,7 @@ const $Web3 = require('web3');
 const $web3 = new $Web3('http://localhost:8545');
 const RLP = require('rlp');
 const secp256k1 = require('secp256k1');
+const EthCrypto = require('eth-crypto');
 
 // Sign
 function signRaw(hash, privateKey) {
@@ -57,9 +58,6 @@ let casperCurrentEpoch = 7;
 let sourceEpoch = 6;
 // RLP encode the required vote message
 let sigHash = $web3.utils.keccak256(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]));
-// Encode it all
-let signature = $web3.eth.accounts.sign(sigHash, pkey);
-let combinedSig = signature.v + signature.r +  signature.s;
 
 function paddy(string, padlen, padchar) {
     string = string.substr(0, 2) == '0x' ? string.slice(2) : string;
@@ -68,16 +66,26 @@ function paddy(string, padlen, padchar) {
     return (pad + string).slice(-pad.length);
 }
 
-console.log(sigHash);
+
+const publicKey = EthCrypto.publicKeyByPrivateKey(
+    'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37'
+);
 
 const signatureOb = signRaw(
     sigHash, // hash of message
     'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37', // privateKey
 );
 
+const signer = EthCrypto.recover(
+    signatureOb.sig,
+    sigHash // signed message hash
+);
+
 
 
 async function logs() { 
+    console.log(signer);
+    console.log("\n");
     console.log(signatureOb);
     console.log("\n");
     console.log(paddy(signatureOb.v, 64));

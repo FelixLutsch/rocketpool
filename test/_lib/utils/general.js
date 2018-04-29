@@ -27,10 +27,25 @@ export function rlpEncode (argArray) {
 }
 
 // Get the gananche-cli private key
-export function getGanachePrivateKey () {
-    // Known private key because we start ganache with mnemonic "jungle neck govern chief unaware rubber frequent tissue service license alcohol velvet"
-    return 'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37';
+export function getGanachePrivateKey (account) {
+    account = !account ? '0xe6ed92d26573c67af5eca7fb2a49a807fb8f88d' : account;
+    const pkeys = {
+        '0xe6ed92d26573c67af5eca7fb2a49a807fb8f88db' : 'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37',
+        '0x18a58e43c37ddc9cccf3ac642c6f430ad663e400' : '025515b79bbe5edf008112d19a14457e6bea72dc4660667eeb2c3225c8285618',
+        '0x7e9ea400443957be3918acfbd1f57cf6d3f5126a' : '02984e048155b5a3b80162a2041e096c3f99b9b4324bc7ff3e56e96d37f1500b',
+        '0x24fbed7ecd625d3f0fd19a6c9113ded436172294' : '5894075a2b08d7585fd4b354914326da5c9b05f92a737b8789f127ba7a21f939',
+        '0x14cb2253a2f9898efa43b9ca15bcfde401ccfbe7' : '5a18d98ff88545ab82044b31ace49ad252056b89445913dc6a5653eca58c438a',
+        '0x8b0ef9f1932a2e44c3d27be4c70c3bc07a6a27b3' : 'ea8a7f5637ca1ae8ee6783850af1c0c57cdc5e66d1dcb92fd636908ad9b4cc04',
+        '0x822eaeebb9e106c8cb263bda6455430fec652653' : '836915de8841cd4e3a24b80c9c33e59be8db8ab3daf32d5edce56597b905bbf0',
+        '0xd57d9c08926e28fc9f1f3dd65db02e6a7958380c' : '759b3437ff0fd1af70a5a367ac281c73f6dca2e17a4650a7f939fb50ad15f6cd',
+        '0x6f10fd508321d27d8f19cbcc2f2f3d5527b637ec' : 'dde1c7fcfe3fa4c5e824e2e0cf5d8cef98692cde611b070d054045c2826aecb4',
+        '0x421433c3f99529a704ec2270e1a68fa66dd8bd79' : '418bb76e4af529837d39f4812201c6e4b9b3d5d521f66047b6f34a6d7bc0c811'
+    }
+
+    // Known private keys because we start ganache with mnemonic "jungle neck govern chief unaware rubber frequent tissue service license alcohol velvet"
+    return pkeys[account];
 }
+
 
 // Get the ABI file - used for precompiled contracts
 export function getABI (abiFilePath) {

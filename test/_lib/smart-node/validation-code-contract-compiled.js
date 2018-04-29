@@ -35,5 +35,5 @@ function _createValidationCodeContractBytes(signerAddress){
     // Get the bytecode
     let casperBytecode = FS.readFileSync('./contracts/contract/casper/compiled/validation_code_simple.bin');
     // Replace our placeholder address with the signer
-    return casperBytecode.toString().replace(/00000000000000000000000000000PLACEHOLDER/gi, signerAddress).trim();
+    return casperBytecode.toString().replace(/00000000000000000000000000000PLACEHOLDER/gi, signerAddress.toLowerCase()).trim();
 }
