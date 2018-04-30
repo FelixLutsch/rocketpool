@@ -78,8 +78,8 @@ export async function scenarioValidatorVote(fromAddress, validatorWithdrawalAddr
     // Get the current validator index and vote
     let validatorIndex = parseInt(await casper.methods.validator_indexes(validatorWithdrawalAddress).call({from: fromAddress}));
     let casperCurrentEpoch = parseInt(await casper.methods.current_epoch().call({from: fromAddress}));
-    //let targetHash = await casper.methods.recommended_target_hash().call({from: fromAddress});
-    let targetHash = Buffer.from('9f89849f28a87af0becb13abca1a47a05486be849c9b528529dfc14a33b1fa4c', 'hex');
+    console.log(casperCurrentEpoch);
+    let targetHash = Buffer.from(removeTrailing0x(await casper.methods.recommended_target_hash().call({from: fromAddress})), 'hex');
     let sourceEpoch = parseInt(await casper.methods.recommended_source_epoch().call({from: fromAddress}));
     // Verify data ok
     assert.isTrue(casperCurrentEpoch >= 0, 'Casper current epoch is invalid');
@@ -87,12 +87,12 @@ export async function scenarioValidatorVote(fromAddress, validatorWithdrawalAddr
     assert.isTrue(sourceEpoch >= 0 && sourceEpoch == (casperCurrentEpoch - 1), 'Casper source epoch is invalid');
     // RLP encode the required vote message
     let sigHash = $web3.utils.keccak256(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]));
-    
+    // Sign it
     let signature = signRaw(sigHash, getGanachePrivateKey(fromAddress));
-    // Combine and pad too 32 int length (same as casper python code)
-    let combinedSig = paddy(signature.v, 64) + paddy(signature.r, 64) +  paddy(signature.s, 64);
-    //let combinedSig = signature.v + signature.r + signature.s;
-    let voteMessage = RLP.encode([validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, Buffer.from(combinedSig, 'hex')]);
+    // Combine and pad to 32 int length (same as casper python code)
+    let combinedSig = Buffer.from(paddy(signature.v, 64) + paddy(signature.r, 64) +  paddy(signature.s, 64), 'hex');
+    // RLP encode the message params now
+    let voteMessage = RLP.encode([validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig]);
     // Estimate gas for vote transaction
     //let voteGas = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).estimateGas({ from: fromAddress });
     
