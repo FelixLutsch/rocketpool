@@ -49,16 +49,6 @@ function addTrailing0x(str) {
     else return str;
 }
 
-
-let validatorIndex = 1;
-//let targetHash = "0x9b55f7a0b2fb3a5446becf58e5aa9829a019037f476107786fde41699d4c932a";
-let targetHash = Buffer.from('2583983b77a71c321faaa2a3e2edb2449e2adb173a903ef3515592d3c9cbd54f', 'hex');
-let pkey = Buffer.from('0xc6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37', 'hex');
-let casperCurrentEpoch = 7;
-let sourceEpoch = 6;
-// RLP encode the required vote message
-let sigHash = $web3.utils.keccak256(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]));
-
 function paddy(string, padlen, padchar) {
     string = string.substr(0, 2) == '0x' ? string.slice(2) : string;
     var pad_char = typeof padchar !== 'undefined' ? padchar : '0';
@@ -67,13 +57,22 @@ function paddy(string, padlen, padchar) {
 }
 
 
-const publicKey = EthCrypto.publicKeyByPrivateKey(
-    'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37'
-);
+let validatorIndex = 1;
+//let targetHash = "0x9b55f7a0b2fb3a5446becf58e5aa9829a019037f476107786fde41699d4c932a";
+let targetHash = Buffer.from('9f89849f28a87af0becb13abca1a47a05486be849c9b528529dfc14a33b1fa4c', 'hex');
+let casperCurrentEpoch = 7;
+let sourceEpoch = 6;
+let pkey = '025515b79bbe5edf008112d19a14457e6bea72dc4660667eeb2c3225c8285618';
+// RLP encode the required vote message
+let sigHash = $web3.utils.keccak256(RLP.encode([validatorIndex,targetHash,casperCurrentEpoch,sourceEpoch]));
 
 const signatureOb = signRaw(
     sigHash, // hash of message
-    'c6d2ac9b00bd599c4ce9d3a69c91e496eb9e79781d9dc84c79bafa7618f45f37', // privateKey
+    pkey, // privateKey
+);
+
+const publicKey = EthCrypto.publicKeyByPrivateKey(
+    pkey
 );
 
 const signer = EthCrypto.recover(
@@ -82,16 +81,23 @@ const signer = EthCrypto.recover(
 );
 
 
+ // Combine and pad too 32 int length (same as casper python code)
+ let combinedSig = paddy(signatureOb.v, 64) + paddy(signatureOb.r, 64) +  paddy(signatureOb.s, 64);
+ let voteMessage = RLP.encode([validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, Buffer.from(combinedSig, 'hex')]);
+
+
 
 async function logs() { 
-    console.log(signer);
+    console.log(combinedSig);
     console.log("\n");
-    console.log(signatureOb);
+    console.log(voteMessage.toString('hex'));
     console.log("\n");
+    /*
     console.log(paddy(signatureOb.v, 64));
     console.log(paddy(signatureOb.r, 64));
     console.log(paddy(signatureOb.s, 64));
     console.log(paddy(signatureOb.v, 64) + paddy(signatureOb.r, 64) + paddy(signatureOb.s, 64));
+    */
     console.log("\n");
 }
 logs();
