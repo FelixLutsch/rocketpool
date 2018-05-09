@@ -94,26 +94,11 @@ export async function scenarioValidatorVote(fromAddress, validatorWithdrawalAddr
     // RLP encode the message params now
     let voteMessage = RLP.encode([validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig]);
     // Estimate gas for vote transaction
-    //let voteGas = await casper.methods.vote($web3.utils.bytesToHex(voteMessage)).estimateGas({ from: fromAddress });
+    let voteGas = await casper.methods.vote('0x'+voteMessage.toString('hex')).estimateGas({ from: fromAddress });
     
-    console.log(getGanachePrivateKey(fromAddress));
-    console.log("\n");
-    console.log(validatorIndex, targetHash, casperCurrentEpoch, sourceEpoch, combinedSig);
-    console.log("\n");
-    console.log(voteMessage.toString('hex'));
-    /*
-    console.log(signature);
-    console.log(combinedSig);
-    console.log("\n");
-    // Vote now
-    //console.log(voteMessage.toString('hex'));
-    //console.log("\n");
-    //console.log($web3.utils.bytesToHex(voteMessage));
-    */
-
     let tx = await casper.methods.vote('0x'+voteMessage.toString('hex')).send({
         from: fromAddress, 
-        gas: 4500000, 
+        gas: voteGas, 
         gasPrice: '20000000000'
     });
     console.log("\n");
