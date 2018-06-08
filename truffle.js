@@ -31,7 +31,7 @@ contract: Contract,
       host: 'localhost',
       port: 8545,
       network_id: '*', // Match any network id
-      gas: 6725527,
+      gas: 8000000,
     },
     // Local Parity Development 
     dev: {
@@ -39,7 +39,7 @@ contract: Contract,
         port: 8545,
         network_id: "*", 
         from: "0x00a329c0648769A73afAc7F9381E08FB43dBEA72",
-        gas: 6725527,
+        gas: 8000000,
     }
   },
 };
