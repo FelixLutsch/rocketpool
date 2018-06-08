@@ -1,3 +1,6 @@
+// Dependencies
+const pako = require('pako');
+
 // Config
 const config = require('../truffle.js');
 
@@ -9,6 +12,7 @@ const rocketUser = artifacts.require('./RocketUser.sol');
 const rocketNodeAdmin = artifacts.require('./RocketNodeAdmin.sol');
 const rocketNodeValidator = artifacts.require('./contracts/RocketNodeValidator.sol');
 const rocketNodeStatus = artifacts.require('./contracts/RocketNodeStatus.sol');
+const rocketPoolMini = artifacts.require('./RocketPoolMini.sol');
 const rocketPoolMiniDelegate = artifacts.require('./RocketPoolMiniDelegate.sol');
 const rocketDepositToken = artifacts.require('./RocketDepositToken.sol');
 const rocketPartnerAPI = artifacts.require('./RocketPartnerAPI.sol');
@@ -23,6 +27,14 @@ const rocketPoolTokenDummy = artifacts.require('./contract/DummyRocketPoolToken.
 // Interfaces
 const rocketStorageInterface = artifacts.require('./contracts/interface/RocketStorageInterface.sol');
 const rocketSettingsInterface = artifacts.require('./contracts/interface/RocketSettingsInterface.sol');
+
+// Compress / decompress ABIs
+function compressAbi(abi) {
+  return Buffer.from(pako.deflate(JSON.stringify(abi))).toString('base64');
+}
+function decompressAbi(abi) {
+  return JSON.parse(pako.inflate(Buffer.from(abi, 'base64'), {to: 'string'}));
+}
 
 // Accounts
 const accounts = web3.eth.accounts;
@@ -111,6 +123,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketPool'),
         rocketPool.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketPool'),
+        compressAbi(rocketPool.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketPool Address');
       console.log(rocketPool.address);
@@ -123,6 +139,10 @@ module.exports = async (deployer, network) => {
       await rocketStorageInstance.setAddress(
         config.web3.utils.soliditySha3('contract.name', 'rocketRole'),
         rocketRole.address
+      );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketRole'),
+        compressAbi(rocketRole.abi)
       );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketRole Address');
@@ -137,6 +157,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketUser'),
         rocketUser.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketUser'),
+        compressAbi(rocketUser.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketUser Address');
       console.log(rocketUser.address);
@@ -149,6 +173,10 @@ module.exports = async (deployer, network) => {
       await rocketStorageInstance.setAddress(
         config.web3.utils.soliditySha3('contract.name', 'rocketNodeAdmin'),
         rocketNodeAdmin.address
+      );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketNodeAdmin'),
+        compressAbi(rocketNodeAdmin.abi)
       );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketNodeAdmin Address');
@@ -163,6 +191,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketNodeValidator'),
         rocketNodeValidator.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketNodeValidator'),
+        compressAbi(rocketNodeValidator.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketNodeValidator Address');
       console.log(rocketNodeValidator.address);
@@ -176,22 +208,19 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketNodeStatus'),
         rocketNodeStatus.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketNodeStatus'),
+        compressAbi(rocketNodeStatus.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketNodeStatus Address');
       console.log(rocketNodeStatus.address);
 
-      // Rocket Pool Mini Delegate
-      await rocketStorageInstance.setAddress(
-        config.web3.utils.soliditySha3('contract.address', rocketPoolMiniDelegate.address),
-        rocketPoolMiniDelegate.address
+      // Rocket Pool Mini
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketPoolMini'),
+        compressAbi(rocketPoolMini.abi)
       );
-      await rocketStorageInstance.setAddress(
-        config.web3.utils.soliditySha3('contract.name', 'rocketPoolMiniDelegate'),
-        rocketPoolMiniDelegate.address
-      );
-      // Log it
-      console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketPoolMiniDelegate Address');
-      console.log(rocketPoolMiniDelegate.address);
 
       // Rocket Pool Mini Delegate
       await rocketStorageInstance.setAddress(
@@ -201,6 +230,10 @@ module.exports = async (deployer, network) => {
       await rocketStorageInstance.setAddress(
         config.web3.utils.soliditySha3('contract.name', 'rocketPoolMiniDelegate'),
         rocketPoolMiniDelegate.address
+      );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketPoolMiniDelegate'),
+        compressAbi(rocketPoolMiniDelegate.abi)
       );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketPoolMiniDelegate Address');
@@ -215,6 +248,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketFactory'),
         rocketFactory.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketFactory'),
+        compressAbi(rocketFactory.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketFactory Address');
       console.log(rocketFactory.address);
@@ -227,6 +264,10 @@ module.exports = async (deployer, network) => {
       await rocketStorageInstance.setAddress(
         config.web3.utils.soliditySha3('contract.name', 'rocketUpgrade'),
         rocketUpgrade.address
+      );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketUpgrade'),
+        compressAbi(rocketUpgrade.abi)
       );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketUpgrade Address');
@@ -241,6 +282,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketUtils'),
         rocketUtils.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketUtils'),
+        compressAbi(rocketUtils.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketUtils Address');
       console.log(rocketUtils.address);
@@ -254,6 +299,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketPartnerAPI'),
         rocketPartnerAPI.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketPartnerAPI'),
+        compressAbi(rocketPartnerAPI.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketPartnerAPI Address');
       console.log(rocketPartnerAPI.address);
@@ -266,6 +315,10 @@ module.exports = async (deployer, network) => {
       await rocketStorageInstance.setAddress(
         config.web3.utils.soliditySha3('contract.name', 'rocketDepositToken'),
         rocketDepositToken.address
+      );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketDepositToken'),
+        compressAbi(rocketDepositToken.abi)
       );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketDepositToken Address');
@@ -290,6 +343,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketVault'),
         rocketVault.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketVault'),
+        compressAbi(rocketVault.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketVault Address');
       console.log(rocketVault.address);
@@ -303,6 +360,10 @@ module.exports = async (deployer, network) => {
         config.web3.utils.soliditySha3('contract.name', 'rocketVaultStore'),
         rocketVaultStore.address
       );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketVaultStore'),
+        compressAbi(rocketVaultStore.abi)
+      );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage rocketVaultStore Address');
       console.log(rocketVaultStore.address);
@@ -315,6 +376,10 @@ module.exports = async (deployer, network) => {
       await rocketStorageInstance.setAddress(
         config.web3.utils.soliditySha3('contract.name', 'rocketSettings'),
         rocketSettings.address
+      );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'rocketSettings'),
+        compressAbi(rocketSettings.abi)
       );
       // Log it
       console.log('\x1b[33m%s\x1b[0m:', 'Set Storage RocketSettings Address');
@@ -415,6 +480,10 @@ module.exports = async (deployer, network) => {
       await rocketStorageInstance.setAddress(
         config.web3.utils.soliditySha3('contract.name', 'casper'),
         casperContractAddress
+      );
+      await rocketStorageInstance.setString(
+        config.web3.utils.soliditySha3('contract.abi', 'casper'),
+        compressAbi(loadABI('./contracts/contract/casper/compiled/simple_casper.abi'))
       );
       // Log it
       console.log('\x1b[32m%s\x1b[0m:', 'Casper - Address Updated');
