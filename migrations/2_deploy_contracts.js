@@ -454,7 +454,7 @@ module.exports = async (deployer, network) => {
             }).send({
                 from: accounts[0], 
                 value: 50000000000000000000, // 50 ETH starting balance for Casper
-                gas: 6000000, 
+                gas: 8000000, 
                 gasPrice: '20000000000'
             });
           // Set the Casper contract address
